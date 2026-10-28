@@ -1,69 +1,218 @@
+import type { Locale } from "@/types/content";
+import { setSiteLocale } from "@/i18n/locale";
 import Image from "next/image";
-
-export default function Home() {
+import { getTranslations } from "next-intl/server";
+import { ArrowUpRight, ArrowDown } from "lucide-react";
+import { Link } from "@/i18n/navigation";
+import { getFeaturedProjects } from "@/lib/content/queries";
+import { team, projects, services } from "@/lib/content/data";
+import { pageMetadata } from "@/lib/metadata";
+import {
+  SectionHeading,
+  ProjectCard,
+  TeamCard,
+  ServiceGrid,
+  Values,
+  Process,
+  CallToAction,
+} from "@/components/site/content-blocks";
+import { ServiceAccordion } from "@/components/site/service-accordion";
+import { CompanyTimeline } from "@/components/site/company-timeline";
+import { Testimonials } from "@/components/site/testimonials";
+import { Reveal } from "@/components/site/reveal";
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  return pageMetadata((await params).locale, "home");
+}
+export default async function Home({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setSiteLocale(locale);
+  const t = await getTranslations();
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <>
+      <section className="hero">
+        <div className="hero-image">
+          <Image
+            src="/images/tower.jpg"
+            alt={t("home.featured")}
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
+          />
+        </div>
+        <div className="hero-shade" />
+        <div className="shell relative z-10">
+          <div className="hero-copy">
+            <p className="eyebrow text-white/70">
+              <span className="mr-3 inline-block size-1.5 bg-amber" />
+              {t("home.eyebrow")}
+            </p>
+            <Reveal>
+              <h1>
+                {t("home.title")}
+                <br />
+                <span>{t("home.titleAccent")}</span>
+              </h1>
+              <p className="hero-intro">{t("home.intro")}</p>
+              <div className="mt-9 flex flex-wrap gap-4">
+                <Link href="/projects" className="button button-amber">
+                  {t("common.explore")}
+                  <ArrowUpRight size={18} />
+                </Link>
+                <Link href="/contact" className="button button-outline">
+                  {t("common.start")}
+                  <ArrowUpRight size={18} />
+                </Link>
+              </div>
+            </Reveal>
+          </div>
+          <div className="hero-bottom">
+            <a
+              href="#capabilities"
+              className="flex items-center gap-4 text-[10px] tracking-[.18em]"
+            >
+              <span className="icon-button border border-white/30">
+                <ArrowDown size={16} />
+              </span>
+              {t("home.scroll")}
+            </a>
+            <Link
+              href="/projects/northline-tower"
+              className="hidden text-right sm:block"
+            >
+              <p className="text-[9px] tracking-[.18em] text-white/60">
+                {t("home.featured")}
+              </p>
+              <p className="mt-2 flex items-center justify-end gap-4 text-sm">
+                {projects[1].title[locale as Locale]}
+                <ArrowUpRight size={16} />
+              </p>
+            </Link>
+          </div>
+        </div>
+      </section>
+      <div className="stats-strip">
+        <div className="shell grid grid-cols-3 divide-x divide-border">
+          {[
+            [projects.length, "statProjects"],
+            [team.length, "statPeople"],
+            [services.length, "statServices"],
+          ].map(([n, key]) => (
+            <div
+              key={key}
+              className="flex flex-col items-center justify-center gap-2 px-3 py-7 sm:flex-row sm:gap-5"
+            >
+              <strong className="text-3xl font-light">
+                {new Intl.NumberFormat(locale, {
+                  minimumIntegerDigits: 2,
+                }).format(Number(n))}
+              </strong>
+              <span className="text-center text-[10px] uppercase tracking-widest text-muted-foreground">
+                {t(`home.${key}`)}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+      <section id="capabilities" className="section shell scroll-mt-24">
+        <SectionHeading
+          label={t("home.capLabel")}
+          title={t("home.capTitle")}
+          description={t("home.capIntro")}
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+        <ServiceAccordion />
+      </section>
+      <section className="section muted-section">
+        <div className="shell">
+          <SectionHeading
+            label={t("home.projectsLabel")}
+            title={t("home.projectsTitle")}
+            description={t("home.projectsIntro")}
           >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            <Link href="/projects" className="text-link">
+              {t("common.allProjects")}
+              <ArrowUpRight size={17} />
+            </Link>
+          </SectionHeading>
+          <div className="featured-grid">
+            {getFeaturedProjects().map((p, i) => (
+              <Reveal key={p.id}>
+                <ProjectCard project={p} index={i} />
+              </Reveal>
+            ))}
+          </div>
         </div>
-      </main>
-    </div>
+      </section>
+      <section className="section shell">
+        <SectionHeading
+          label={t("home.peopleLabel")}
+          title={t("home.peopleTitle")}
+          description={t("home.peopleIntro")}
+        >
+          <Link href="/team" className="text-link">
+            {t("common.allTeam")}
+            <ArrowUpRight size={17} />
+          </Link>
+        </SectionHeading>
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          {team.slice(0, 4).map((m) => (
+            <TeamCard key={m.id} member={m} compact />
+          ))}
+        </div>
+      </section>
+      <section className="section dark-section">
+        <div className="shell">
+          <SectionHeading
+            label={t("home.historyLabel")}
+            title={t("home.historyTitle")}
+            description={t("home.historyIntro")}
+          />
+          <CompanyTimeline />
+        </div>
+      </section>
+      <section className="section shell">
+        <SectionHeading
+          label={t("home.servicesLabel")}
+          title={t("home.servicesTitle")}
+        />
+        <ServiceGrid />
+      </section>
+      <section className="section muted-section">
+        <div className="shell">
+          <SectionHeading
+            label={t("home.whyLabel")}
+            title={t("home.whyTitle")}
+            description={t("home.whyIntro")}
+          />
+          <Values />
+        </div>
+      </section>
+      <section className="section shell">
+        <SectionHeading
+          label={t("home.processLabel")}
+          title={t("home.processTitle")}
+        />
+        <Process />
+      </section>
+      <section className="section muted-section">
+        <div className="shell">
+          <SectionHeading
+            label={t("home.testimonialsLabel")}
+            title={t("home.testimonialsTitle")}
+            description={t("home.testimonialsNote")}
+          />
+          <Testimonials />
+        </div>
+      </section>
+      <CallToAction />
+    </>
   );
 }
