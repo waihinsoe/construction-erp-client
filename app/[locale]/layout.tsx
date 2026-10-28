@@ -19,10 +19,6 @@ export const metadata: Metadata = {
   robots: { index: siteConfig.indexable, follow: siteConfig.indexable },
   title: { default: "Northline", template: "%s | Northline" },
 };
-<<<<<<< HEAD
-
-export default function RootLayout({ children }: LayoutProps<"/[locale]">) {
-=======
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
@@ -38,7 +34,6 @@ export default async function LocaleLayout({
   setRequestLocale(locale);
   const messages = (await import(`../../messages/${locale}.json`)).default;
   const t = await getTranslations({ locale });
->>>>>>> 5e017e4 (feat: finish first stage)
   return (
     <html lang={locale}>
       <body>
