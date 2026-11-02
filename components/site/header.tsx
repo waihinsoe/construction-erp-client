@@ -1,8 +1,8 @@
 "use client";
-import { useLocale, useTranslations } from "next-intl";
-import { Link, usePathname, useRouter } from "@/i18n/navigation";
-import { Menu, ArrowUpRight, X, Globe2 } from "lucide-react";
-import { useState, useTransition } from "react";
+import { useTranslations } from "next-intl";
+import { Link, usePathname } from "@/i18n/navigation";
+import { Menu, ArrowUpRight, X } from "lucide-react";
+import { useState } from "react";
 import {
   Sheet,
   SheetTrigger,
@@ -10,22 +10,22 @@ import {
   SheetTitle,
   SheetClose,
 } from "@/components/ui/sheet";
+import { LanguageSwitcher } from "@/components/common/language-switcher";
+import { ThemeToggle } from "@/components/common/theme-toggle";
+
 const links = ["projects", "services", "about", "team"] as const;
 export function Header() {
   const t = useTranslations();
-  const locale = useLocale();
   const pathname = usePathname();
-  const router = useRouter();
   const [open, setOpen] = useState(false);
-  const [pending, startTransition] = useTransition();
   return (
     <header className="site-header">
-      <div className="shell flex h-24 items-center justify-between gap-5">
+      <div className="shell flex h-24 items-center justify-between gap-3 sm:gap-5">
         <Link href="/" className="brand" aria-label={t("nav.home")}>
           <span className="brand-mark" aria-hidden="true">
             N<span>↗</span>
           </span>
-          <span>
+          <span className="max-[380px]:hidden">
             <strong>{t("brand")}</strong>
             <small>{t("brandSub")}</small>
           </span>
@@ -45,28 +45,9 @@ export function Header() {
             </Link>
           ))}
         </nav>
-        <div className="flex items-center gap-5">
-          <label className="flex items-center gap-1.5 text-xs">
-            <Globe2 size={15} aria-hidden />
-            <span className="sr-only">{t("common.language")}</span>
-            <select
-              className="language-select"
-              value={locale}
-              disabled={pending}
-              onChange={(e) =>
-                startTransition(() =>
-                  router.replace(
-                    pathname + window.location.search + window.location.hash,
-                    { locale: e.target.value },
-                  ),
-                )
-              }
-            >
-              <option value="en">EN</option>
-              <option value="ja">日本語</option>
-              <option value="my">မြန်မာ</option>
-            </select>
-          </label>
+        <div className="flex items-center gap-2 sm:gap-3">
+          <LanguageSwitcher />
+          <ThemeToggle />
           <Link
             href="/contact"
             className="button button-amber hidden md:inline-flex"

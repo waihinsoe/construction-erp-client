@@ -9,6 +9,17 @@
     "team": "チーム",
     "contact": "お問い合わせ"
   },
+  "theme": {
+    "toggle": "テーマを変更",
+    "light": "ライト",
+    "dark": "ダーク",
+    "system": "システム"
+  },
+  "languages": {
+    "en": "English",
+    "ja": "日本語",
+    "my": "မြန်မာ"
+  },
   "common": {
     "explore": "プロジェクトを見る",
     "start": "相談を始める",
