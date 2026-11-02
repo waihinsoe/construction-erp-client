@@ -9,6 +9,17 @@
     "team": "Our people",
     "contact": "Contact"
   },
+  "theme": {
+    "toggle": "Change theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "languages": {
+    "en": "English",
+    "ja": "日本語",
+    "my": "မြန်မာ"
+  },
   "common": {
     "explore": "Explore our projects",
     "start": "Start a conversation",
